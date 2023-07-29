@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  mysqldb:
+    image: "mysql:8.0"
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=todoroasteg
+      - MYSQL_DATABASE=todos
+  app:
+    build: .
+    volumes:
+      - ./:/todo-app/src
+    ports:
+      - "8080:8080"
+    image: roasteg/todo-spring

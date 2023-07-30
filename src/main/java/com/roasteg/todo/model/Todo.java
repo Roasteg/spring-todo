@@ -3,13 +3,7 @@ package com.roasteg.todo.model;
 import java.util.Date;
 
 import io.micrometer.common.lang.NonNull;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,6 +30,8 @@ public class Todo {
     private String tag;
 
     private String note;
+    
+    private Boolean finished;
 
     @Temporal(TemporalType.TIMESTAMP)
     @NonNull
@@ -48,5 +44,6 @@ public class Todo {
     @PrePersist
     private void onCreate() {
         created = new Date();
+        finished = false;
     }
 }

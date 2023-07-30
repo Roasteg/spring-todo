@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.roasteg.todo.model.Response;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.roasteg.todo.model.Todo;
@@ -25,13 +27,18 @@ public class TodoController {
     }
 
     @PostMapping("/add")
-    public void addTodo(@RequestBody Todo todo) {
-        todoService.saveTodo(todo);
+    public Todo addTodo(@RequestBody Todo todo) {
+        return todoService.saveTodo(todo);
+    }
+
+    @PostMapping("/finish/{id}")
+    public Todo finishTodo(@PathVariable int id) {
+        return todoService.changeTodoStatus(id);
     }
 
     @PatchMapping("/edit/{id}")
-    public void editTodo(@PathVariable int id, @RequestBody Map<String, Object> fields) throws JsonMappingException {
-        todoService.editTodo(id, fields);
+    public Todo editTodo(@PathVariable int id, @RequestBody Map<String, Object> fields) throws JsonMappingException {
+        return todoService.editTodo(id, fields);
     }
 
     @DeleteMapping("/delete/{id}")

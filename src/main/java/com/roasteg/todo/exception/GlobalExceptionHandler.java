@@ -1,6 +1,6 @@
 package com.roasteg.todo.exception;
 
-import com.roasteg.todo.model.CustomException;
+import com.roasteg.todo.model.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler
-    public ResponseEntity<CustomException> todoNotFound(TodoNotFound exception) {
-        final CustomException customException = new CustomException();
-        customException.setMessage(exception.getMessage());
+    public ResponseEntity<Response> todoNotFound(TodoNotFound exception) {
+        final Response customException = new Response();
+        customException.setMessage("Todo not found!");
         customException.setStatus(HttpStatus.NOT_FOUND.value());
         customException.setTimestamp(System.currentTimeMillis());
-        return new ResponseEntity<CustomException>(customException, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<Response>(customException, HttpStatus.NOT_FOUND);
     }
 }

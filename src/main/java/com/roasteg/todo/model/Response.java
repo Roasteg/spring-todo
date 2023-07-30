@@ -10,8 +10,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Response {
-    private int status;
-
     private String message;
 
     private Long timestamp;

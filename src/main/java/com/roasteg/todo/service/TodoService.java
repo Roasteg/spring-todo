@@ -5,11 +5,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.roasteg.todo.dto.TodoDto;
-import com.roasteg.todo.exception.TodoNotFound;
-import com.roasteg.todo.model.Response;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.roasteg.todo.exception.TodoNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.roasteg.todo.model.Todo;
@@ -32,13 +28,13 @@ public class TodoService {
 
     public Todo editTodo(int id, Map<String, Object> fields) throws JsonMappingException {
         final ObjectMapper objectMapper = new ObjectMapper();
-        final Todo todoToEdit = todoRepository.findById(id).orElseThrow(TodoNotFound::new);
+        final Todo todoToEdit = todoRepository.findById(id).orElseThrow(TodoNotFoundException::new);
         final Todo todo = objectMapper.updateValue(todoToEdit, fields);
         return todoRepository.save(todo);
     }
 
     public Todo changeTodoStatus(int id) {
-        final Todo todo = todoRepository.findById(id).orElseThrow(TodoNotFound::new);
+        final Todo todo = todoRepository.findById(id).orElseThrow(TodoNotFoundException::new);
         todo.setFinished(!todo.getFinished());
         return todoRepository.save(todo);
     }

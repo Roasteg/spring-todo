@@ -41,6 +41,9 @@ public class Todo {
     @NonNull
     private Date created;
 
+    @ManyToOne
+    private TodoUser user;
+
     @PrePersist
     private void onCreate() {
         created = new Date();

@@ -1,10 +1,10 @@
 package com.roasteg.todo.controller;
 
+import com.roasteg.todo.dto.UserDto;
 import com.roasteg.todo.exception.IncorrectCredentialsException;
 import com.roasteg.todo.exception.UserExistsException;
 import com.roasteg.todo.model.TodoUser;
 import com.roasteg.todo.security.AuthRequest;
-import com.roasteg.todo.security.AuthResponse;
 import com.roasteg.todo.security.SignupRequest;
 import com.roasteg.todo.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<AuthResponse> signup(@RequestBody SignupRequest request) {
+    public ResponseEntity<UserDto> signup(@RequestBody SignupRequest request) {
         if (authService.userExistsWithEmail(request.getEmail())) {
             throw new UserExistsException();
         }
@@ -29,7 +29,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
+    public ResponseEntity<UserDto> login(@RequestBody AuthRequest request) {
         final TodoUser user = authService.findByEmail(request.getEmail());
         if (!authService.passwordsMatching(user, request)) {
             throw new IncorrectCredentialsException();

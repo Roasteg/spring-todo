@@ -1,18 +1,11 @@
 package com.roasteg.todo.dto;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.Date;
-/*
- *   TODO:
- *    IMPLEMENT DTO USAGE
- *
- */
 
 @Data
 public class TodoDto {
+    private Long id;
 
     private String label;
 

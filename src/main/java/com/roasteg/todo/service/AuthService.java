@@ -1,11 +1,12 @@
 package com.roasteg.todo.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.roasteg.todo.dto.UserDto;
 import com.roasteg.todo.exception.UserNotFoundException;
 import com.roasteg.todo.model.Role;
 import com.roasteg.todo.model.TodoUser;
 import com.roasteg.todo.repository.UserRepository;
 import com.roasteg.todo.security.AuthRequest;
-import com.roasteg.todo.security.AuthResponse;
 import com.roasteg.todo.security.SignupRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+
     private final UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
@@ -24,7 +26,9 @@ public class AuthService {
 
     private final AuthenticationManager authenticationManager;
 
-    public AuthResponse register(SignupRequest signupRequest) {
+    private final ObjectMapper mapper;
+
+    public UserDto register(SignupRequest signupRequest) {
         final TodoUser user = TodoUser
                 .builder()
                 .name(signupRequest.getName())
@@ -34,27 +38,21 @@ public class AuthService {
                 .build();
         userRepository.save(user);
         final String token = jwtService.generateToken(user);
-        return AuthResponse
-                .builder()
-                .token(token)
-                .name(signupRequest.getName())
-                .build();
+        final UserDto userDto = mapper.convertValue(user, UserDto.class);
+        userDto.setToken(token);
+        return userDto;
     }
 
-    public AuthResponse login(AuthRequest authRequest) {
+    public UserDto login(AuthRequest authRequest) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         authRequest.getEmail(),
-                        authRequest.getPassword()
-                )
-        );
+                        authRequest.getPassword()));
         TodoUser user = userRepository.findByEmail(authRequest.getEmail()).orElseThrow();
         String token = jwtService.generateToken(user);
-        return AuthResponse
-                .builder()
-                .token(token)
-                .name(user.getName())
-                .build();
+        UserDto userDto = mapper.convertValue(user, UserDto.class);
+        userDto.setToken(token);
+        return userDto;
     }
 
     public TodoUser findByEmail(String email) {

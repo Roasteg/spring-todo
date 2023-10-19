@@ -6,8 +6,7 @@ import com.roasteg.todo.exception.UserNotFoundException;
 import com.roasteg.todo.model.Role;
 import com.roasteg.todo.model.TodoUser;
 import com.roasteg.todo.repository.UserRepository;
-import com.roasteg.todo.security.AuthRequest;
-import com.roasteg.todo.security.SignupRequest;
+import com.roasteg.todo.dto.AuthDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,13 +27,13 @@ public class AuthService {
 
     private final ObjectMapper mapper;
 
-    public UserDto register(SignupRequest signupRequest) {
+    public UserDto register(AuthDto authDto) {
         final TodoUser user = TodoUser
                 .builder()
-                .name(signupRequest.getName())
-                .email(signupRequest.getEmail())
+                .name(authDto.getName())
+                .email(authDto.getEmail())
                 .role(Role.USER)
-                .password(passwordEncoder.encode(signupRequest.getPassword()))
+                .password(passwordEncoder.encode(authDto.getPassword()))
                 .build();
         userRepository.save(user);
         final String token = jwtService.generateToken(user);
@@ -43,12 +42,12 @@ public class AuthService {
         return userDto;
     }
 
-    public UserDto login(AuthRequest authRequest) {
+    public UserDto login(AuthDto authDto) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        authRequest.getEmail(),
-                        authRequest.getPassword()));
-        TodoUser user = userRepository.findByEmail(authRequest.getEmail()).orElseThrow();
+                        authDto.getEmail(),
+                        authDto.getPassword()));
+        TodoUser user = userRepository.findByEmail(authDto.getEmail()).orElseThrow();
         String token = jwtService.generateToken(user);
         UserDto userDto = mapper.convertValue(user, UserDto.class);
         userDto.setToken(token);
@@ -67,7 +66,7 @@ public class AuthService {
         return userRepository.findByEmail(email).isPresent();
     }
 
-    public boolean passwordsMatching(TodoUser user, AuthRequest authRequest) {
-        return passwordEncoder.matches(authRequest.getPassword(), user.getPassword());
+    public boolean passwordsMatching(TodoUser user, AuthDto authDto) {
+        return passwordEncoder.matches(authDto.getPassword(), user.getPassword());
     }
 }

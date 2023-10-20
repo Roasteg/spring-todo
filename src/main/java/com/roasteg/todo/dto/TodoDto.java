@@ -19,4 +19,6 @@ public class TodoDto {
 
     private Date created;
 
+    private Boolean finished;
+
 }

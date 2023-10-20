@@ -6,12 +6,9 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.roasteg.todo.dto.TodoDto;
-import com.roasteg.todo.model.Response;
-import com.roasteg.todo.model.Todo;
 import com.roasteg.todo.service.TodoService;
 
 import lombok.RequiredArgsConstructor;
@@ -34,8 +31,8 @@ public class TodoController {
     }
 
     @PostMapping("/finish/{id}")
-    public Todo finishTodo(@PathVariable int id, @RequestHeader(name = "Authorization") String token) {
-        return todoService.changeTodoStatus(id);
+    public TodoDto finishTodo(@PathVariable int id, @RequestHeader(name = "Authorization") String token) {
+        return todoService.changeTodoStatus(id, token);
     }
 
     @PatchMapping("/edit/{id}")
@@ -45,6 +42,6 @@ public class TodoController {
 
     @DeleteMapping("/delete/{id}")
     public void deleteTodo(@PathVariable int id, @RequestHeader(name = "Authorization") String token) {
-        todoService.deleteTodo(id);
+        todoService.deleteTodo(id, token);
     }
 }
